@@ -12,57 +12,164 @@
 </head>
 <body>
   <header id="top">
-    <h1>Aiden's Restaurant</h1>
-    <nav>
-      <a href="#top">Home</a>
-      <a href="#about">About</a>
-      <a href="#menu">Menu</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <div class="nav-bar">
+      <a class="logo" href="#top" aria-label="Aiden's Restaurant home">
+        <span class="logo-mark">AR</span>
+        <span class="logo-text">Aiden's Restaurant</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="primary-nav" aria-label="Primary">
+        <a href="#top">Home</a>
+        <a href="#menu">Menu</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
   </header>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-overlay">
+      <p class="hero-kicker">Welcome</p>
+      <h1 id="hero-title">Aiden's Restaurant</h1>
+      <p>The greatest food in New York City. Must check out!</p>
+    </div>
+  </section>
 
   <main>
     <section id="about">
       <h2>About Us</h2>
       <p>
-        This is a sample restaurant website. It includes a short description, a menu section,
-        and contact information. The goal is to show a basic multi-section webpage using HTML,
-        CSS, and JavaScript.
+        This restaurant has been producing the best beef wellington in New York City since 1999. Our main purpose is for everyone
+        that visits New York to be able to say that they ate the best beef wellington here. We also have other great dishes like our
+        signature pastas and we have amazing homemade dessert. We are so confident in our ability to cook that if you don't have a great
+        experience here we will refund your whole order!
       </p>
     </section>
 
     <section id="menu">
       <h2>Menu</h2>
-      <div class="menu-section">
-        <h3>Appetizers</h3>
-        <ul>
-          <li>Salad - $6</li>
-          <li>Soup - $5</li>
-          <li>Breadsticks - $4</li>
-        </ul>
+      <div class="menu-grid">
+        <article class="menu-card">
+          <h3>Appetizers</h3>
+          <div class="menu-item">
+            <span>Caeser Salad</span>
+            <span>$6</span>
+          </div>
+          <div class="menu-item">
+            <span>Tomato Soup</span>
+            <span>$5</span>
+          </div>
+          <div class="menu-item">
+            <span>Breadsticks</span>
+            <span>$4</span>
+          </div>
+        </article>
+        <article class="menu-card">
+          <h3>Main Dishes</h3>
+          <div class="menu-item">
+            <span>Signature Tomato Pasta</span>
+            <span>$12</span>
+          </div>
+          <div class="menu-item">
+            <span>Beef Wellington</span>
+            <span>$67</span>
+          </div>
+          <div class="menu-item">
+            <span>Cheeseburger</span>
+            <span>$10</span>
+          </div>
+        </article>
+        <article class="menu-card">
+          <h3>Desserts</h3>
+          <div class="menu-item">
+            <span>Ice Cream</span>
+            <span>$4</span>
+          </div>
+          <div class="menu-item">
+            <span>Chocolate Cake</span>
+            <span>$5</span>
+          </div>
+          <div class="menu-item">
+            <span>Cheesecake</span>
+            <span>$6</span>
+          </div>
+        </article>
       </div>
-      <div class="menu-section">
-        <h3>Main Dishes</h3>
-        <ul>
-          <li>Pasta - $12</li>
-          <li>Chicken Sandwich - $11</li>
-          <li>Cheeseburger - $10</li>
-        </ul>
+    </section>
+
+    <section id="gallery">
+      <h2>Gallery</h2>
+      <div class="gallery-slider" aria-label="Restaurant photo gallery">
+        <button class="slider-button" type="button" data-direction="prev" aria-label="Previous image">
+          &#10094;
+        </button>
+        <div class="gallery-track">
+          <figure class="gallery-slide is-active">
+            <img src="food1.jpg" alt="Plated restaurant dish with garnish">
+          </figure>
+          <figure class="gallery-slide">
+            <img src="food2.jpg" alt="Prepared entree served on a dinner plate">
+          </figure>
+          <figure class="gallery-slide">
+            <img src="food3.jpg" alt="Restaurant food presented for guests">
+          </figure>
+          <figure class="gallery-slide">
+            <img src="desssert1.jfif" alt="Dessert served at Aiden's Restaurant">
+          </figure>
+          <figure class="gallery-slide">
+            <img src="insiderest.png" alt="Interior seating area of the restaurant">
+          </figure>
+          <figure class="gallery-slide">
+            <img src="inside2.jpg" alt="Another view of the restaurant interior">
+          </figure>
+        </div>
+        <button class="slider-button" type="button" data-direction="next" aria-label="Next image">
+          &#10095;
+        </button>
       </div>
-      <div class="menu-section">
-        <h3>Desserts</h3>
-        <ul>
-          <li>Ice Cream - $4</li>
-          <li>Chocolate Cake - $5</li>
-        </ul>
-      </div>
+      <div class="slider-dots" aria-label="Gallery navigation"></div>
     </section>
 
     <section id="contact">
       <h2>Contact</h2>
-      <p>Address: 123 Main Street, Hometown, USA</p>
-      <p>Phone: (123) 456-7890</p>
-      <p>Email: info@example.com</p>
+      <div class="contact-layout">
+        <div class="contact-info">
+          <p>Address: 160 Broadway, New York, NY 10038</p>
+          <p>Phone: (123) 456-7890</p>
+          <p>Email: aiden@bestfood.com</p>
+          <iframe
+            class="map-embed"
+            title="Google map showing a McDonald's in New York City"
+            src="https://www.google.com/maps?q=160%20Broadway%2C%20New%20York%2C%20NY%2010038%20McDonald's&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+
+        <form class="contact-form" action="#" method="post">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" required>
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
     </section>
   </main>
 
@@ -78,5 +185,6 @@
     <p><a href="#">Twitter</a></p>
   </footer>
 
+  <script src="script.js"></script>
 </body>
 </html>
