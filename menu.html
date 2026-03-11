@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aiden's Restaurant | Menu</title>
+  <meta
+    name="description"
+    content="Menu page for Aiden's Restaurant."
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="top">
+    <div class="nav-bar">
+      <a class="logo" href="index.html" aria-label="Aiden's Restaurant home">
+        <span class="logo-mark">AR</span>
+        <span class="logo-text">Aiden's Restaurant</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="primary-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a class="current-page" href="menu.html">Menu</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="menu">
+      <h1>Menu</h1>
+      <div class="menu-grid">
+        <article class="menu-card">
+          <h3>Appetizers</h3>
+          <div class="menu-item">
+            <span>Caeser Salad</span>
+            <span>$6</span>
+          </div>
+          <div class="menu-item">
+            <span>Tomato Soup</span>
+            <span>$5</span>
+          </div>
+          <div class="menu-item">
+            <span>Breadsticks</span>
+            <span>$4</span>
+          </div>
+        </article>
+        <article class="menu-card">
+          <h3>Main Dishes</h3>
+          <div class="menu-item">
+            <span>Signature Tomato Pasta</span>
+            <span>$12</span>
+          </div>
+          <div class="menu-item">
+            <span>Beef Wellington</span>
+            <span>$67</span>
+          </div>
+          <div class="menu-item">
+            <span>Cheeseburger</span>
+            <span>$10</span>
+          </div>
+        </article>
+        <article class="menu-card">
+          <h3>Desserts</h3>
+          <div class="menu-item">
+            <span>Ice Cream</span>
+            <span>$4</span>
+          </div>
+          <div class="menu-item">
+            <span>Chocolate Cake</span>
+            <span>$5</span>
+          </div>
+          <div class="menu-item">
+            <span>Cheesecake</span>
+            <span>$6</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <h2>Business Hours</h2>
+    <p>Monday - Friday: 11:00 AM - 9:00 PM</p>
+    <p>Saturday: 12:00 PM - 10:00 PM</p>
+    <p>Sunday: Closed</p>
+
+    <h2>Social Media</h2>
+    <p><a href="#">Facebook</a></p>
+    <p><a href="#">Instagram</a></p>
+    <p><a href="#">Twitter</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

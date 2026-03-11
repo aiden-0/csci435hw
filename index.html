@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Restaurant Website</title>
+  <title>Aiden's Restaurant | Home</title>
   <meta
     name="description"
-    content="A simple restaurant website for a web development class project."
+    content="Home page for Aiden's Restaurant."
   >
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header id="top">
     <div class="nav-bar">
-      <a class="logo" href="#top" aria-label="Aiden's Restaurant home">
+      <a class="logo" href="index.html" aria-label="Aiden's Restaurant home">
         <span class="logo-mark">AR</span>
         <span class="logo-text">Aiden's Restaurant</span>
       </a>
@@ -29,11 +29,10 @@
         <span></span>
       </button>
       <nav id="primary-nav" aria-label="Primary">
-        <a href="#top">Home</a>
-        <a href="#menu">Menu</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a class="current-page" href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
       </nav>
     </div>
   </header>
@@ -47,65 +46,11 @@
   </section>
 
   <main>
-    <section id="about">
-      <h2>About Us</h2>
+    <section>
+      <h2>Welcome</h2>
       <p>
-        This restaurant has been producing the best beef wellington in New York City since 1999. Our main purpose is for everyone
-        that visits New York to be able to say that they ate the best beef wellington here. We also have other great dishes like our
-        signature pastas and we have amazing homemade dessert. We are so confident in our ability to cook that if you don't have a great
-        experience here we will refund your whole order!
+        Explore our menu, learn more about the restaurant, and get in touch through the pages above.
       </p>
-    </section>
-
-    <section id="menu">
-      <h2>Menu</h2>
-      <div class="menu-grid">
-        <article class="menu-card">
-          <h3>Appetizers</h3>
-          <div class="menu-item">
-            <span>Caeser Salad</span>
-            <span>$6</span>
-          </div>
-          <div class="menu-item">
-            <span>Tomato Soup</span>
-            <span>$5</span>
-          </div>
-          <div class="menu-item">
-            <span>Breadsticks</span>
-            <span>$4</span>
-          </div>
-        </article>
-        <article class="menu-card">
-          <h3>Main Dishes</h3>
-          <div class="menu-item">
-            <span>Signature Tomato Pasta</span>
-            <span>$12</span>
-          </div>
-          <div class="menu-item">
-            <span>Beef Wellington</span>
-            <span>$67</span>
-          </div>
-          <div class="menu-item">
-            <span>Cheeseburger</span>
-            <span>$10</span>
-          </div>
-        </article>
-        <article class="menu-card">
-          <h3>Desserts</h3>
-          <div class="menu-item">
-            <span>Ice Cream</span>
-            <span>$4</span>
-          </div>
-          <div class="menu-item">
-            <span>Chocolate Cake</span>
-            <span>$5</span>
-          </div>
-          <div class="menu-item">
-            <span>Cheesecake</span>
-            <span>$6</span>
-          </div>
-        </article>
-      </div>
     </section>
 
     <section id="gallery">
@@ -139,37 +84,6 @@
         </button>
       </div>
       <div class="slider-dots" aria-label="Gallery navigation"></div>
-    </section>
-
-    <section id="contact">
-      <h2>Contact</h2>
-      <div class="contact-layout">
-        <div class="contact-info">
-          <p>Address: 160 Broadway, New York, NY 10038</p>
-          <p>Phone: (123) 456-7890</p>
-          <p>Email: aiden@bestfood.com</p>
-          <iframe
-            class="map-embed"
-            title="Google map showing a McDonald's in New York City"
-            src="https://www.google.com/maps?q=160%20Broadway%2C%20New%20York%2C%20NY%2010038%20McDonald's&output=embed"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-
-        <form class="contact-form" action="#" method="post">
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" required>
-
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required>
-
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-
-          <button type="submit">Send Message</button>
-        </form>
-      </div>
     </section>
   </main>
 

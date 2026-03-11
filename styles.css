@@ -80,6 +80,11 @@ nav a {
   font-weight: bold;
 }
 
+nav a.current-page {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 nav a:hover,
 nav a:focus-visible,
 .logo:hover,

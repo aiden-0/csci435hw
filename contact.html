@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aiden's Restaurant | Contact</title>
+  <meta
+    name="description"
+    content="Contact page for Aiden's Restaurant."
+  >
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header id="top">
+    <div class="nav-bar">
+      <a class="logo" href="index.html" aria-label="Aiden's Restaurant home">
+        <span class="logo-mark">AR</span>
+        <span class="logo-text">Aiden's Restaurant</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="primary-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href="about.html">About</a>
+        <a class="current-page" href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="contact">
+      <h1>Contact</h1>
+      <div class="contact-layout">
+        <div class="contact-info">
+          <p>Address: 160 Broadway, New York, NY 10038</p>
+          <p>Phone: (123) 456-7890</p>
+          <p>Email: aiden@bestfood.com</p>
+          <iframe
+            class="map-embed"
+            title="Google map showing a McDonald's in New York City"
+            src="https://www.google.com/maps?q=160%20Broadway%2C%20New%20York%2C%20NY%2010038%20McDonald's&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+
+        <form class="contact-form" action="#" method="post">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" required>
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <h2>Business Hours</h2>
+    <p>Monday - Friday: 11:00 AM - 9:00 PM</p>
+    <p>Saturday: 12:00 PM - 10:00 PM</p>
+    <p>Sunday: Closed</p>
+
+    <h2>Social Media</h2>
+    <p><a href="#">Facebook</a></p>
+    <p><a href="#">Instagram</a></p>
+    <p><a href="#">Twitter</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
