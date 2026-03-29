@@ -4,6 +4,11 @@ const navLinks = nav ? Array.from(nav.querySelectorAll("a")) : [];
 const slides = Array.from(document.querySelectorAll(".gallery-slide"));
 const dotsContainer = document.querySelector(".slider-dots");
 const controls = document.querySelectorAll(".slider-button");
+const menuItems = Array.from(document.querySelectorAll(".menu-item"));
+const cartList = document.querySelector("#cart-list");
+const cartTotal = document.querySelector("#cart-total");
+const clearCartButton = document.querySelector("#clear-cart");
+const cartEmptyMessage = document.querySelector("#cart-empty-message");
 
 if (menuToggle && nav) {
   function closeMenu() {
@@ -70,4 +75,91 @@ if (slides.length && dotsContainer) {
   });
 
   showSlide(0);
+}
+
+if (menuItems.length && cartList && cartTotal && clearCartButton && cartEmptyMessage) {
+  const cart = new Map();
+
+  function formatPrice(value) {
+    return `$${value.toFixed(2)}`;
+  }
+
+  function renderCart() {
+    cartList.innerHTML = "";
+
+    const entries = Array.from(cart.values());
+    const isEmpty = entries.length === 0;
+    cartEmptyMessage.hidden = !isEmpty;
+    clearCartButton.disabled = isEmpty;
+
+    let total = 0;
+
+    entries.forEach((item) => {
+      total += item.price * item.quantity;
+
+      const listItem = document.createElement("li");
+      listItem.className = "cart-item";
+
+      const row = document.createElement("div");
+      row.className = "cart-row";
+
+      const details = document.createElement("div");
+      const name = document.createElement("p");
+      name.className = "cart-item-name";
+      name.textContent = item.name;
+
+      const meta = document.createElement("p");
+      meta.className = "cart-item-meta";
+      meta.textContent = `${formatPrice(item.price)} x ${item.quantity} = ${formatPrice(item.price * item.quantity)}`;
+
+      details.append(name, meta);
+
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "cart-item-remove";
+      removeButton.textContent = "Remove";
+      removeButton.setAttribute("aria-label", `Remove one ${item.name} from cart`);
+      removeButton.addEventListener("click", () => {
+        if (item.quantity > 1) {
+          item.quantity -= 1;
+        } else {
+          cart.delete(item.name);
+        }
+        renderCart();
+      });
+
+      row.append(details, removeButton);
+      listItem.appendChild(row);
+      cartList.appendChild(listItem);
+    });
+
+    cartTotal.textContent = formatPrice(total);
+  }
+
+  menuItems.forEach((itemButton) => {
+    itemButton.addEventListener("click", () => {
+      const { name, price } = itemButton.dataset;
+      const parsedPrice = Number(price);
+
+      if (!name || Number.isNaN(parsedPrice)) {
+        return;
+      }
+
+      const existingItem = cart.get(name);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.set(name, { name, price: parsedPrice, quantity: 1 });
+      }
+
+      renderCart();
+    });
+  });
+
+  clearCartButton.addEventListener("click", () => {
+    cart.clear();
+    renderCart();
+  });
+
+  renderCart();
 }
