@@ -330,6 +330,26 @@ h3 {
   border-top: 1px solid #ead9c8;
 }
 
+.cart-notification {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background-color: #8b3a1f;
+  color: white;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.cart-notification.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .gallery-slider {
   position: relative;
   display: flex;
@@ -584,5 +604,12 @@ footer a:hover {
 
   .map-embed {
     height: 240px;
+  }
+
+  .cart-notification {
+    right: 16px;
+    left: 16px;
+    bottom: 16px;
+    text-align: center;
   }
 }

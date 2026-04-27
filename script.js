@@ -9,6 +9,7 @@ const cartList = document.querySelector("#cart-list");
 const cartTotal = document.querySelector("#cart-total");
 const clearCartButton = document.querySelector("#clear-cart");
 const cartEmptyMessage = document.querySelector("#cart-empty-message");
+const cartNotification = document.querySelector("#cart-notification");
 
 if (menuToggle && nav) {
   function closeMenu() {
@@ -79,9 +80,24 @@ if (slides.length && dotsContainer) {
 
 if (menuItems.length && cartList && cartTotal && clearCartButton && cartEmptyMessage) {
   const cart = new Map();
+  let notificationTimeoutId;
 
   function formatPrice(value) {
     return `$${value.toFixed(2)}`;
+  }
+
+  function showCartNotification(message) {
+    if (!cartNotification) {
+      return;
+    }
+
+    window.clearTimeout(notificationTimeoutId);
+    cartNotification.textContent = message;
+    cartNotification.classList.add("is-visible");
+
+    notificationTimeoutId = window.setTimeout(() => {
+      cartNotification.classList.remove("is-visible");
+    }, 2200);
   }
 
   function renderCart() {
@@ -153,6 +169,7 @@ if (menuItems.length && cartList && cartTotal && clearCartButton && cartEmptyMes
       }
 
       renderCart();
+      showCartNotification(`${name} added to cart.`);
     });
   });
 
