@@ -40,97 +40,7 @@
   <main>
     <section id="menu">
       <h1>Menu</h1>
-      <div class="menu-layout">
-        <div class="menu-grid">
-          <article class="menu-card">
-            <h3>Appetizers</h3>
-            <button class="menu-item" type="button" data-name="Caeser Salad" data-price="6">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Caeser Salad</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$6.00</span>
-            </button>
-            <button class="menu-item" type="button" data-name="Tomato Soup" data-price="5">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Tomato Soup</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$5.00</span>
-            </button>
-            <button class="menu-item" type="button" data-name="Breadsticks" data-price="4">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Breadsticks</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$4.00</span>
-            </button>
-          </article>
-          <article class="menu-card">
-            <h3>Main Dishes</h3>
-            <button class="menu-item" type="button" data-name="Signature Tomato Pasta" data-price="12">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Signature Tomato Pasta</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$12.00</span>
-            </button>
-            <button class="menu-item" type="button" data-name="Beef Wellington" data-price="67">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Beef Wellington</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$67.00</span>
-            </button>
-            <button class="menu-item" type="button" data-name="Cheeseburger" data-price="10">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Cheeseburger</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$10.00</span>
-            </button>
-          </article>
-          <article class="menu-card">
-            <h3>Desserts</h3>
-            <button class="menu-item" type="button" data-name="Ice Cream" data-price="4">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Ice Cream</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$4.00</span>
-            </button>
-            <button class="menu-item" type="button" data-name="Chocolate Cake" data-price="5">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Chocolate Cake</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$5.00</span>
-            </button>
-            <button class="menu-item" type="button" data-name="Cheesecake" data-price="6">
-              <span class="menu-item-info">
-                <span class="menu-item-name">Cheesecake</span>
-                <span class="menu-item-action">Add to cart</span>
-              </span>
-              <span class="menu-item-price">$6.00</span>
-            </button>
-          </article>
-        </div>
-
-        <aside class="cart-card" aria-labelledby="cart-heading">
-          <div class="cart-header">
-            <h2 id="cart-heading">Shopping Cart</h2>
-            <button class="clear-cart-button" id="clear-cart" type="button">Clear Cart</button>
-          </div>
-          <p class="cart-empty-message" id="cart-empty-message">Your cart is empty.</p>
-          <ul class="cart-list" id="cart-list" aria-live="polite"></ul>
-          <div class="cart-footer">
-            <div class="cart-total-row">
-              <span>Total</span>
-              <strong id="cart-total">$0.00</strong>
-            </div>
-          </div>
-        </aside>
-      </div>
+      <div id="menu-app"></div>
     </section>
   </main>
 
@@ -146,8 +56,9 @@
     <p><a href="#">Twitter</a></p>
   </footer>
 
-  <div class="cart-notification" id="cart-notification" role="status" aria-live="polite" aria-atomic="true"></div>
-
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="cart-app.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
