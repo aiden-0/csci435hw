@@ -1,18 +1,62 @@
-# React + Vite
+# Aiden's Restaurant
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React, Vite, Express, and MongoDB restaurant app.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Install dependencies:
 
-## React Compiler
+   ```bash
+   npm install
+   ```
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+2. Create a `.env` file from `.env.example` and adjust `MONGODB_URI` if needed:
 
-Note: This will impact Vite dev & build performances.
+   ```bash
+   cp .env.example .env
+   ```
 
-## Expanding the ESLint configuration
+3. Start MongoDB locally, then run both the API and React app:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+   ```bash
+   npm run dev:full
+   ```
+
+The React app runs at `http://localhost:5173`. The Express API runs at `http://localhost:5000`.
+
+## Deploying to Vercel
+
+The project includes a Vercel Function at `api/index.js`, so the same Express API is available under `/api` after deployment.
+
+In the Vercel project settings, add this environment variable for Production, Preview, and Development:
+
+```bash
+MONGODB_URI=mongodb+srv://aidencoolha123_db_user:YOUR_PASSWORD@webdev.ye7nzsz.mongodb.net/aiden_restaurant?retryWrites=true&w=majority
+```
+
+Do not commit your real `.env` file. It is ignored by Git.
+
+In MongoDB Atlas, make sure **Network Access** allows Vercel to connect. For a class project, `0.0.0.0/0` is the simplest option, though a narrower rule is better for production.
+
+After deployment, test these URLs on your Vercel domain:
+
+```text
+https://your-project.vercel.app/api/health
+https://your-project.vercel.app/api/menu
+https://your-project.vercel.app/menu
+```
+
+## API
+
+- `GET /api/menu` returns menu items from MongoDB.
+- `POST /api/menu` creates a menu item.
+- `PATCH /api/menu/:id` updates a menu item.
+- `DELETE /api/menu/:id` deletes a menu item.
+- `GET /api/cart/:sessionId` returns a persisted cart.
+- `PUT /api/cart/:sessionId` saves cart updates.
+- `DELETE /api/cart/:sessionId` clears a cart.
+- `GET /api/orders` returns saved orders.
+- `POST /api/orders` creates an order and clears that cart.
+- `PATCH /api/orders/:id` updates an order status.
+
+If the `menuitems` collection is empty when the server starts, the backend seeds it with the original restaurant menu.

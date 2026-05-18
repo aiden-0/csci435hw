@@ -308,10 +308,59 @@ h3 {
   cursor: not-allowed;
 }
 
+.cart-item-remove:disabled {
+  background-color: #c6b3a2;
+  cursor: not-allowed;
+}
+
 .cart-footer {
   margin-top: 18px;
   padding-top: 16px;
   border-top: 1px solid #ead9c8;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.checkout-form label {
+  font-weight: bold;
+}
+
+.checkout-form input {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.checkout-form button {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 6px;
+  background-color: #8b3a1f;
+  color: white;
+  cursor: pointer;
+}
+
+.checkout-form button:disabled {
+  background-color: #c6b3a2;
+  cursor: not-allowed;
+}
+
+.status-message {
+  margin: 0 0 18px;
+  color: #5f554d;
+}
+
+.status-message.error {
+  color: #a12819;
 }
 
 .cart-notification {

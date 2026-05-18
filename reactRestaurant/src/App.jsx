@@ -1,33 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BrowserRouter, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
-
-const menuSections = [
-  {
-    title: 'Appetizers',
-    items: [
-      { name: 'Caeser Salad', price: 6 },
-      { name: 'Tomato Soup', price: 5 },
-      { name: 'Breadsticks', price: 4 },
-    ],
-  },
-  {
-    title: 'Main Dishes',
-    items: [
-      { name: 'Signature Tomato Pasta', price: 12 },
-      { name: 'Beef Wellington', price: 67 },
-      { name: 'Cheeseburger', price: 10 },
-    ],
-  },
-  {
-    title: 'Desserts',
-    items: [
-      { name: 'Ice Cream', price: 4 },
-      { name: 'Chocolate Cake', price: 5 },
-      { name: 'Cheesecake', price: 6 },
-    ],
-  },
-]
 
 const galleryImages = [
   { src: '/food1.jpg', alt: 'Plated restaurant dish with garnish' },
@@ -49,13 +22,39 @@ function formatPrice(value) {
   return `$${value.toFixed(2)}`
 }
 
-function SiteHeader() {
-  const location = useLocation()
-  const [isOpen, setIsOpen] = useState(false)
+function getCartSessionId() {
+  const storageKey = 'aiden-restaurant-cart-session'
+  const existingSessionId = window.localStorage.getItem(storageKey)
 
-  useEffect(() => {
-    setIsOpen(false)
-  }, [location.pathname])
+  if (existingSessionId) {
+    return existingSessionId
+  }
+
+  const sessionId = window.crypto?.randomUUID?.() ?? `cart-${Date.now()}`
+  window.localStorage.setItem(storageKey, sessionId)
+  return sessionId
+}
+
+async function apiRequest(path, options) {
+  const response = await fetch(path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  })
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}))
+    throw new Error(errorBody.message ?? 'Request failed.')
+  }
+
+  if (response.status === 204) {
+    return null
+  }
+
+  return response.json()
+}
+
+function SiteHeader() {
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <header id="top">
@@ -79,16 +78,33 @@ function SiteHeader() {
         </button>
 
         <nav id="primary-nav" className={isOpen ? 'is-open' : ''} aria-label="Primary">
-          <NavLink to="/" end className={({ isActive }) => (isActive ? 'current-page' : '')}>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => (isActive ? 'current-page' : '')}
+            onClick={() => setIsOpen(false)}
+          >
             Home
           </NavLink>
-          <NavLink to="/menu" className={({ isActive }) => (isActive ? 'current-page' : '')}>
+          <NavLink
+            to="/menu"
+            className={({ isActive }) => (isActive ? 'current-page' : '')}
+            onClick={() => setIsOpen(false)}
+          >
             Menu
           </NavLink>
-          <NavLink to="/about" className={({ isActive }) => (isActive ? 'current-page' : '')}>
+          <NavLink
+            to="/about"
+            className={({ isActive }) => (isActive ? 'current-page' : '')}
+            onClick={() => setIsOpen(false)}
+          >
             About
           </NavLink>
-          <NavLink to="/contact" className={({ isActive }) => (isActive ? 'current-page' : '')}>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) => (isActive ? 'current-page' : '')}
+            onClick={() => setIsOpen(false)}
+          >
             Contact
           </NavLink>
         </nav>
@@ -191,13 +207,28 @@ function HomePage() {
   )
 }
 
-function MenuPage({ cart, total, onAddToCart, onRemoveFromCart, onClearCart }) {
+function MenuPage({
+  cart,
+  total,
+  menuSections,
+  menuError,
+  isMenuLoading,
+  isPlacingOrder,
+  orderForm,
+  onAddToCart,
+  onClearCart,
+  onOrderFormChange,
+  onPlaceOrder,
+  onRemoveFromCart,
+}) {
   const isEmpty = cart.length === 0
 
   return (
     <main className="menu-page-main">
       <section id="menu">
         <h1>Menu</h1>
+        {menuError && <p className="status-message error">{menuError}</p>}
+        {isMenuLoading && <p className="status-message">Loading menu from the database...</p>}
         <div className="menu-layout">
           <div className="menu-grid">
             {menuSections.map((section) => (
@@ -228,7 +259,7 @@ function MenuPage({ cart, total, onAddToCart, onRemoveFromCart, onClearCart }) {
                 className="clear-cart-button"
                 type="button"
                 onClick={onClearCart}
-                disabled={isEmpty}
+                disabled={isEmpty || isPlacingOrder}
               >
                 Clear Cart
               </button>
@@ -252,7 +283,8 @@ function MenuPage({ cart, total, onAddToCart, onRemoveFromCart, onClearCart }) {
                         type="button"
                         className="cart-item-remove"
                         aria-label={`Remove one ${item.name} from cart`}
-                        onClick={() => onRemoveFromCart(item.name)}
+                        onClick={() => onRemoveFromCart(item.menuItem)}
+                        disabled={isPlacingOrder}
                       >
                         Remove
                       </button>
@@ -267,6 +299,31 @@ function MenuPage({ cart, total, onAddToCart, onRemoveFromCart, onClearCart }) {
                 <span>Total</span>
                 <strong>{formatPrice(total)}</strong>
               </div>
+              <form className="checkout-form" onSubmit={onPlaceOrder}>
+                <label htmlFor="customerName">Name</label>
+                <input
+                  id="customerName"
+                  name="customerName"
+                  type="text"
+                  value={orderForm.customerName}
+                  onChange={onOrderFormChange}
+                  placeholder="Guest"
+                />
+
+                <label htmlFor="customerEmail">Email</label>
+                <input
+                  id="customerEmail"
+                  name="customerEmail"
+                  type="email"
+                  value={orderForm.customerEmail}
+                  onChange={onOrderFormChange}
+                  placeholder="you@example.com"
+                />
+
+                <button type="submit" disabled={isEmpty || isPlacingOrder}>
+                  {isPlacingOrder ? 'Placing Order...' : 'Place Order'}
+                </button>
+              </form>
             </div>
           </aside>
         </div>
@@ -337,7 +394,17 @@ function ContactPage() {
 
 function AppShell() {
   const location = useLocation()
+  const [cartSessionId] = useState(getCartSessionId)
   const [cart, setCart] = useState([])
+  const [hasLoadedCart, setHasLoadedCart] = useState(false)
+  const [menuItems, setMenuItems] = useState([])
+  const [isMenuLoading, setIsMenuLoading] = useState(true)
+  const [menuError, setMenuError] = useState('')
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+  const [orderForm, setOrderForm] = useState({
+    customerName: '',
+    customerEmail: '',
+  })
   const [notification, setNotification] = useState('')
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
@@ -349,8 +416,6 @@ function AppShell() {
     if (!notification) {
       return undefined
     }
-
-    setIsNotificationVisible(true)
 
     const timeoutId = window.setTimeout(() => {
       setIsNotificationVisible(false)
@@ -364,29 +429,137 @@ function AppShell() {
     [cart],
   )
 
+  const menuSections = useMemo(() => {
+    const sectionMap = new Map()
+
+    menuItems.forEach((item) => {
+      const category = item.category || 'Menu'
+      const section = sectionMap.get(category) ?? { title: category, items: [] }
+
+      section.items.push(item)
+      sectionMap.set(category, section)
+    })
+
+    return Array.from(sectionMap.values())
+  }, [menuItems])
+
+  const showNotification = useCallback((message) => {
+    setNotification(message)
+    setIsNotificationVisible(true)
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadMenu() {
+      try {
+        const menu = await apiRequest('/api/menu')
+
+        if (isMounted) {
+          setMenuItems(menu)
+          setMenuError('')
+        }
+      } catch (error) {
+        if (isMounted) {
+          setMenuError(`Could not load menu: ${error.message}`)
+        }
+      } finally {
+        if (isMounted) {
+          setIsMenuLoading(false)
+        }
+      }
+    }
+
+    loadMenu()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadCart() {
+      try {
+        const savedCart = await apiRequest(`/api/cart/${cartSessionId}`)
+
+        if (isMounted) {
+          setCart(savedCart.items ?? [])
+        }
+      } catch (error) {
+        if (isMounted) {
+          showNotification(`Could not load saved cart: ${error.message}`)
+        }
+      } finally {
+        if (isMounted) {
+          setHasLoadedCart(true)
+        }
+      }
+    }
+
+    loadCart()
+
+    return () => {
+      isMounted = false
+    }
+  }, [cartSessionId, showNotification])
+
+  useEffect(() => {
+    if (!hasLoadedCart) {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        await apiRequest(`/api/cart/${cartSessionId}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            items: cart.map((item) => ({
+              menuItemId: item.menuItem,
+              quantity: item.quantity,
+            })),
+          }),
+        })
+      } catch (error) {
+        showNotification(`Could not save cart: ${error.message}`)
+      }
+    }, 250)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [cart, cartSessionId, hasLoadedCart, showNotification])
+
   function addToCart(itemToAdd) {
     setCart((currentCart) => {
-      const existingItem = currentCart.find((item) => item.name === itemToAdd.name)
+      const existingItem = currentCart.find((item) => item.menuItem === itemToAdd._id)
 
       if (existingItem) {
         return currentCart.map((item) =>
-          item.name === itemToAdd.name
+          item.menuItem === itemToAdd._id
             ? { ...item, quantity: item.quantity + 1 }
             : item,
         )
       }
 
-      return [...currentCart, { ...itemToAdd, quantity: 1 }]
+      return [
+        ...currentCart,
+        {
+          menuItem: itemToAdd._id,
+          name: itemToAdd.name,
+          price: itemToAdd.price,
+          quantity: 1,
+        },
+      ]
     })
 
-    setNotification(`${itemToAdd.name} added to cart.`)
+    showNotification(`${itemToAdd.name} added to cart.`)
   }
 
-  function removeFromCart(name) {
+  function removeFromCart(menuItemId) {
     setCart((currentCart) =>
       currentCart
         .map((item) =>
-          item.name === name
+          item.menuItem === menuItemId
             ? { ...item, quantity: item.quantity - 1 }
             : item,
         )
@@ -396,6 +569,44 @@ function AppShell() {
 
   function clearCart() {
     setCart([])
+  }
+
+  function handleOrderFormChange(event) {
+    const { name, value } = event.target
+    setOrderForm((currentForm) => ({ ...currentForm, [name]: value }))
+  }
+
+  async function placeOrder(event) {
+    event.preventDefault()
+
+    if (cart.length === 0) {
+      return
+    }
+
+    setIsPlacingOrder(true)
+
+    try {
+      const order = await apiRequest('/api/orders', {
+        method: 'POST',
+        body: JSON.stringify({
+          sessionId: cartSessionId,
+          customerName: orderForm.customerName || 'Guest',
+          customerEmail: orderForm.customerEmail,
+          items: cart.map((item) => ({
+            menuItemId: item.menuItem,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+
+      setCart([])
+      setOrderForm({ customerName: '', customerEmail: '' })
+      showNotification(`Order ${order._id.slice(-6)} placed successfully.`)
+    } catch (error) {
+      showNotification(`Could not place order: ${error.message}`)
+    } finally {
+      setIsPlacingOrder(false)
+    }
   }
 
   return (
@@ -409,9 +620,16 @@ function AppShell() {
             <MenuPage
               cart={cart}
               total={total}
+              menuSections={menuSections}
+              menuError={menuError}
+              isMenuLoading={isMenuLoading}
+              isPlacingOrder={isPlacingOrder}
+              orderForm={orderForm}
               onAddToCart={addToCart}
               onRemoveFromCart={removeFromCart}
               onClearCart={clearCart}
+              onOrderFormChange={handleOrderFormChange}
+              onPlaceOrder={placeOrder}
             />
           }
         />
