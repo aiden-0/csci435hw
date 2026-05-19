@@ -14,6 +14,7 @@ const galleryImages = [
 const pageTitles = {
   '/': "Aiden's Restaurant | Home",
   '/menu': "Aiden's Restaurant | Menu",
+  '/orders': "Aiden's Restaurant | Orders",
   '/about': "Aiden's Restaurant | About",
   '/contact': "Aiden's Restaurant | Contact",
 }
@@ -99,6 +100,13 @@ function SiteHeader() {
             onClick={() => setIsOpen(false)}
           >
             About
+          </NavLink>
+          <NavLink
+            to="/orders"
+            className={({ isActive }) => (isActive ? 'current-page' : '')}
+            onClick={() => setIsOpen(false)}
+          >
+            Orders
           </NavLink>
           <NavLink
             to="/contact"
@@ -332,6 +340,147 @@ function MenuPage({
   )
 }
 
+function OrdersPage({
+  orders,
+  menuItems,
+  isOrdersLoading,
+  ordersError,
+  onAddOrderItem,
+  onDeleteOrder,
+  onReloadOrders,
+  onRemoveOrderItem,
+  onUpdateOrderItem,
+}) {
+  const availableMenuItems = menuItems.filter((item) => item.isAvailable !== false)
+
+  function handleAddItem(event, orderId) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const menuItemId = formData.get('menuItemId')
+    const quantity = Number(formData.get('quantity'))
+
+    if (!menuItemId) {
+      return
+    }
+
+    onAddOrderItem(orderId, menuItemId, quantity)
+    event.currentTarget.reset()
+  }
+
+  function handleUpdateQuantity(event, orderId, menuItemId) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const quantity = Number(formData.get('quantity'))
+    onUpdateOrderItem(orderId, menuItemId, quantity)
+  }
+
+  return (
+    <main className="orders-page-main">
+      <section id="orders">
+        <div className="orders-heading">
+          <div>
+            <h1>Orders</h1>
+            <p>Update placed orders without making a new checkout.</p>
+          </div>
+          <button className="secondary-button" type="button" onClick={onReloadOrders}>
+            Refresh
+          </button>
+        </div>
+
+        {ordersError && <p className="status-message error">{ordersError}</p>}
+        {isOrdersLoading && <p className="status-message">Loading orders...</p>}
+        {!isOrdersLoading && orders.length === 0 && (
+          <p className="status-message">No orders have been placed yet.</p>
+        )}
+
+        <div className="orders-list">
+          {orders.map((order) => (
+            <article className="order-card" key={order._id}>
+              <div className="order-card-header">
+                <div>
+                  <h2>Order {order._id.slice(-6)}</h2>
+                  <p>
+                    {order.customerName || 'Guest'} &middot; {order.status}
+                  </p>
+                </div>
+                <div className="order-total">
+                  <span>Total</span>
+                  <strong>{formatPrice(order.total)}</strong>
+                </div>
+              </div>
+
+              <ul className="order-items-list">
+                {order.items.map((item) => (
+                  <li className="order-item-row" key={item.menuItem}>
+                    <div>
+                      <p className="cart-item-name">{item.name}</p>
+                      <p className="cart-item-meta">
+                        {formatPrice(item.price)} x {item.quantity} ={' '}
+                        {formatPrice(item.price * item.quantity)}
+                      </p>
+                    </div>
+
+                    <form
+                      className="order-item-actions"
+                      onSubmit={(event) =>
+                        handleUpdateQuantity(event, order._id, item.menuItem)}
+                    >
+                      <label htmlFor={`quantity-${order._id}-${item.menuItem}`}>Qty</label>
+                      <input
+                        id={`quantity-${order._id}-${item.menuItem}`}
+                        name="quantity"
+                        type="number"
+                        min="1"
+                        defaultValue={item.quantity}
+                      />
+                      <button type="submit">Update</button>
+                      <button
+                        type="button"
+                        onClick={() => onRemoveOrderItem(order._id, item.menuItem)}
+                      >
+                        Remove
+                      </button>
+                    </form>
+                  </li>
+                ))}
+              </ul>
+
+              <form className="order-add-form" onSubmit={(event) => handleAddItem(event, order._id)}>
+                <label htmlFor={`add-menu-item-${order._id}`}>Add food item</label>
+                <select id={`add-menu-item-${order._id}`} name="menuItemId" required>
+                  <option value="">Choose an item</option>
+                  {availableMenuItems.map((item) => (
+                    <option value={item._id} key={item._id}>
+                      {item.name} - {formatPrice(item.price)}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor={`add-quantity-${order._id}`}>Qty</label>
+                <input
+                  id={`add-quantity-${order._id}`}
+                  name="quantity"
+                  type="number"
+                  min="1"
+                  defaultValue="1"
+                />
+                <button type="submit">Add Item</button>
+              </form>
+
+              <button
+                className="danger-button"
+                type="button"
+                onClick={() => onDeleteOrder(order._id)}
+              >
+                Delete Order
+              </button>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  )
+}
+
 function AboutPage() {
   return (
     <main>
@@ -400,6 +549,9 @@ function AppShell() {
   const [menuItems, setMenuItems] = useState([])
   const [isMenuLoading, setIsMenuLoading] = useState(true)
   const [menuError, setMenuError] = useState('')
+  const [orders, setOrders] = useState([])
+  const [isOrdersLoading, setIsOrdersLoading] = useState(true)
+  const [ordersError, setOrdersError] = useState('')
   const [isPlacingOrder, setIsPlacingOrder] = useState(false)
   const [orderForm, setOrderForm] = useState({
     customerName: '',
@@ -448,6 +600,20 @@ function AppShell() {
     setIsNotificationVisible(true)
   }, [])
 
+  const reloadOrders = useCallback(async () => {
+    setIsOrdersLoading(true)
+
+    try {
+      const savedOrders = await apiRequest('/api/orders')
+      setOrders(savedOrders)
+      setOrdersError('')
+    } catch (error) {
+      setOrdersError(`Could not load orders: ${error.message}`)
+    } finally {
+      setIsOrdersLoading(false)
+    }
+  }, [])
+
   useEffect(() => {
     let isMounted = true
 
@@ -471,6 +637,35 @@ function AppShell() {
     }
 
     loadMenu()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadInitialOrders() {
+      try {
+        const savedOrders = await apiRequest('/api/orders')
+
+        if (isMounted) {
+          setOrders(savedOrders)
+          setOrdersError('')
+        }
+      } catch (error) {
+        if (isMounted) {
+          setOrdersError(`Could not load orders: ${error.message}`)
+        }
+      } finally {
+        if (isMounted) {
+          setIsOrdersLoading(false)
+        }
+      }
+    }
+
+    loadInitialOrders()
 
     return () => {
       isMounted = false
@@ -576,6 +771,63 @@ function AppShell() {
     setOrderForm((currentForm) => ({ ...currentForm, [name]: value }))
   }
 
+  function replaceOrder(updatedOrder) {
+    setOrders((currentOrders) =>
+      currentOrders.map((order) => (order._id === updatedOrder._id ? updatedOrder : order)),
+    )
+  }
+
+  async function addOrderItem(orderId, menuItemId, quantity) {
+    try {
+      const updatedOrder = await apiRequest(`/api/orders/${orderId}/items`, {
+        method: 'POST',
+        body: JSON.stringify({ menuItemId, quantity }),
+      })
+
+      replaceOrder(updatedOrder)
+      showNotification('Order item added.')
+    } catch (error) {
+      showNotification(`Could not add item: ${error.message}`)
+    }
+  }
+
+  async function updateOrderItem(orderId, menuItemId, quantity) {
+    try {
+      const updatedOrder = await apiRequest(`/api/orders/${orderId}/items/${menuItemId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ quantity }),
+      })
+
+      replaceOrder(updatedOrder)
+      showNotification('Order item updated.')
+    } catch (error) {
+      showNotification(`Could not update item: ${error.message}`)
+    }
+  }
+
+  async function removeOrderItem(orderId, menuItemId) {
+    try {
+      const updatedOrder = await apiRequest(`/api/orders/${orderId}/items/${menuItemId}`, {
+        method: 'DELETE',
+      })
+
+      replaceOrder(updatedOrder)
+      showNotification('Order item removed.')
+    } catch (error) {
+      showNotification(`Could not remove item: ${error.message}`)
+    }
+  }
+
+  async function deleteOrder(orderId) {
+    try {
+      await apiRequest(`/api/orders/${orderId}`, { method: 'DELETE' })
+      setOrders((currentOrders) => currentOrders.filter((order) => order._id !== orderId))
+      showNotification('Order deleted.')
+    } catch (error) {
+      showNotification(`Could not delete order: ${error.message}`)
+    }
+  }
+
   async function placeOrder(event) {
     event.preventDefault()
 
@@ -600,6 +852,7 @@ function AppShell() {
       })
 
       setCart([])
+      setOrders((currentOrders) => [order, ...currentOrders])
       setOrderForm({ customerName: '', customerEmail: '' })
       showNotification(`Order ${order._id.slice(-6)} placed successfully.`)
     } catch (error) {
@@ -630,6 +883,22 @@ function AppShell() {
               onClearCart={clearCart}
               onOrderFormChange={handleOrderFormChange}
               onPlaceOrder={placeOrder}
+            />
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <OrdersPage
+              orders={orders}
+              menuItems={menuItems}
+              isOrdersLoading={isOrdersLoading}
+              ordersError={ordersError}
+              onAddOrderItem={addOrderItem}
+              onUpdateOrderItem={updateOrderItem}
+              onRemoveOrderItem={removeOrderItem}
+              onDeleteOrder={deleteOrder}
+              onReloadOrders={reloadOrders}
             />
           }
         />
