@@ -8,6 +8,16 @@ const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/aiden_res
 
 let connectionPromise
 
+function createDatabaseError(error) {
+  const databaseError = new Error(
+    'Could not connect to MongoDB. Check MONGODB_URI in Vercel and Atlas Network Access.',
+  )
+
+  databaseError.statusCode = 503
+  databaseError.cause = error
+  return databaseError
+}
+
 export async function connectToDatabase() {
   if (mongoose.connection.readyState === 1) {
     return mongoose.connection
@@ -22,7 +32,7 @@ export async function connectToDatabase() {
       })
       .catch((error) => {
         connectionPromise = undefined
-        throw error
+        throw createDatabaseError(error)
       })
   }
 

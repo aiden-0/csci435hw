@@ -58,5 +58,9 @@ https://your-project.vercel.app/menu
 - `GET /api/orders` returns saved orders.
 - `POST /api/orders` creates an order and clears that cart.
 - `PATCH /api/orders/:id` updates an order status.
+- `POST /api/orders/:id/items` adds a menu item to an order, or increases its quantity if it is already there.
+- `PATCH /api/orders/:id/items/:menuItemId` updates an existing order item's quantity.
+- `DELETE /api/orders/:id/items/:menuItemId` removes one menu item line from an order and recalculates the total.
+- `DELETE /api/orders/:id` deletes an order.
 
 If the `menuitems` collection is empty when the server starts, the backend seeds it with the original restaurant menu.

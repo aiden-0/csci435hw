@@ -42,6 +42,10 @@ app.use((error, req, res, next) => {
     return res.status(400).json({ message: error.message })
   }
 
+  if (error.statusCode) {
+    return res.status(error.statusCode).json({ message: error.message })
+  }
+
   return res.status(500).json({ message: 'Something went wrong on the server.' })
 })
 
